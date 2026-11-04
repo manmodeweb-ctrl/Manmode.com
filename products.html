@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections | MAN MODE</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .products-page {
+            padding: 70px 7%;
+        }
+
+        .products-heading {
+            font-family: 'Oswald', sans-serif;
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .products-intro {
+            color: #999;
+            margin-bottom: 40px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .product-card {
+            background: #141414;
+            padding-bottom: 20px;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+
+        .product-card h3,
+        .product-card p {
+            margin: 15px 18px;
+        }
+
+        .product-card p {
+            color: #c9a46a;
+        }
+
+        .product-card button {
+            margin: 0 18px;
+            padding: 12px 20px;
+            background: #c9a46a;
+            border: none;
+            font-weight: bold;
+        }
+
+        @media(max-width: 700px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <a href="index.html" class="logo">MAN<span>MODE.</span></a>
+    <nav>
+        <a href="index.html">HOME</a>
+        <a href="products.html">SHOP</a>
+        <a href="cart.html">CART</a>
+    </nav>
+</header>
+
+<main class="products-page">
+    <p class="eyebrow">THE MAN MODE EDIT</p>
+    <h1 class="products-heading">ALL COLLECTIONS.</h1>
+    <p class="products-intro">
+        Discover your next signature look.
+    </p>
+
+    <div class="product-grid">
+
+        <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=700" alt="Men's outfit">
+            <h3>Classic Men's Outfit</h3>
+            <p>৳ 1,850</p>
+            <button type="button">VIEW PRODUCT</button>
+        </article>
+
+        <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=700" alt="Men's fashion">
+            <h3>Premium Streetwear</h3>
+            <p>৳ 2,200</p>
+            <button type="button">VIEW PRODUCT</button>
+        </article>
+
+        <article class="product-card">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700" alt="Sneakers">
+            <h3>Urban Sneakers</h3>
+            <p>৳ 2,500</p>
+            <button type="button">VIEW PRODUCT</button>
+        </article>
+
+    </div>
+</main>
+
+<footer>
+    <a href="index.html" class="logo">MAN<span>MODE.</span></a>
+    <p>YOUR STYLE. YOUR RULES.</p>
+</footer>
+
+</body>
+</html>
