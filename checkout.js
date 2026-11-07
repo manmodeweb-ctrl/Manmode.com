@@ -118,6 +118,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     btn.disabled = settings.cod_enabled === false || (!isFreeArea && !canBkash);
     btn.textContent = isFreeArea ? "PLACE ORDER · CASH ON DELIVERY" : "PLACE ORDER · PAY DELIVERY ADVANCE";
+    if (settings.cod_enabled === false) { msg.textContent = "দোকান থেকে Cash on Delivery বন্ধ রাখা হয়েছে। অর্ডার নিতে হলে মালিককে Admin Dashboard থেকে COD চালু করতে হবে।"; msg.classList.add("error"); }
+    else if (!isFreeArea && !canBkash) { msg.textContent = "এই এলাকা ফ্রি ডেলিভারির তালিকায় নেই। অর্ডার চালু করতে দোকানের মালিককে bKash নম্বর ও অগ্রিমের পরিমাণ সেট করতে হবে।"; msg.classList.add("error"); }
+    else { msg.textContent = ""; msg.classList.remove("error"); }
   }
 
   areaInput.addEventListener("input", updateDelivery);
