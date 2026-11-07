@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(t.bannerUrl)css("--hero-image","url("+JSON.stringify(t.bannerUrl)+")");
     if(t.announcement!==undefined)document.querySelectorAll(".announcement").forEach(el=>el.textContent=t.announcement);
     document.querySelectorAll(".brand-mark").forEach(el=>{
-      if(t.logoUrl){el.style.backgroundImage="url("+JSON.stringify(t.logoUrl)+")";el.style.backgroundSize="contain";el.style.backgroundRepeat="no-repeat";el.style.backgroundPosition="left center";}
+      if(t.logoUrl){el.textContent="";el.style.backgroundImage="url("+JSON.stringify(t.logoUrl)+")";el.style.backgroundSize="contain";el.style.backgroundRepeat="no-repeat";el.style.backgroundPosition="left center";}else{el.style.backgroundImage="none";el.textContent=t.logoText||"MAN MODE";}
     });
     document.querySelectorAll(".footer-brand").forEach(el=>{
       if(t.logoUrl){const img=document.createElement("img");img.src=t.logoUrl;img.alt=t.logoText||"MAN MODE";img.style.cssText="max-width:150px;max-height:46px;object-fit:contain;vertical-align:middle";el.replaceChildren(img);}
