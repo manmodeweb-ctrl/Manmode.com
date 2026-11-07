@@ -24,6 +24,24 @@
     if(adminError || data?.is_admin !== true) return false;
     state.user=user; return true;
   }
+  let demoImageCleanupAttempted = false;
+  async function cleanupOldDemoProductImages() {
+    if (demoImageCleanupAttempted || !state.user?.id) return;
+    demoImageCleanupAttempted = true;
+    const folder = state.user.id + "/";
+    const oldDemoImages = [
+      folder + "1793892668445-Screenshot_2026-11-02-12-55-24-942_com.instagram.android.jpg",
+      folder + "1793892773619-Screenshot_2026-11-02-12-55-24-942_com.instagram.android.jpg"
+    ];
+    const { data, error } = await supabaseClient.storage.from("product-images").remove(oldDemoImages);
+    if (error) {
+      demoImageCleanupAttempted = false;
+      say("Old demo product images could not be removed: " + error.message);
+      return;
+    }
+    const removed = Array.isArray(data) ? data.length : 0;
+    if (removed > 0) say(removed + " old demo product image(s) removed. Current MAN MODE logo and banner were preserved.");
+  }
   async function guard() {
     if(!(await isAdmin())) { await supabaseClient.auth.signOut(); showLogin("Admin access is required for this page."); return false; }
     showApp(); await refreshAll(); return true;
@@ -34,7 +52,7 @@
       const {error}=await supabaseClient.auth.signInWithPassword({email:$("adminEmail").value.trim(),password:$("adminPassword").value});
       if(error) throw error;
       if(!(await isAdmin())) { await supabaseClient.auth.signOut(); throw new Error("Admin permission denied. This account is not registered as an administrator."); }
-      showApp(); $("loginStatus").textContent=""; await refreshAll();
+      showApp(); $("loginStatus").textContent=""; await refreshAll(); await cleanupOldDemoProductImages();
     } catch(error) { $("loginStatus").textContent=error.message; }
     finally { btn.disabled=false; }
   });
