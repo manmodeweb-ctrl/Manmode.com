@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111">
+<title>Order Confirmed | MAN MODE</title><link rel="stylesheet" href="style.css?v=20261107-order-confirmed">
+<style>
+.confirm-wrap{max-width:760px;margin:0 auto;padding:64px 6% 90px}.confirm-card{background:#191919;border:1px solid #3d3d3d;padding:clamp(22px,5vw,42px);margin-top:24px}.confirm-mark{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#173b2c;color:#8ee0ae;font-size:30px;font-weight:800}.confirm-id{overflow-wrap:anywhere;font-size:clamp(17px,4vw,24px);font-weight:800;color:#e8c98e}.confirm-row{display:flex;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid #383838}.confirm-row strong{text-align:right}.pay-box{margin-top:22px;padding:18px;background:#101010;border:1px solid #5b4930;line-height:1.7}.action-link{display:inline-block;margin-top:24px;padding:14px 22px;background:#c6a36b;color:#111;text-decoration:none;font-weight:800}.muted{color:#aaa;font-size:13px}
+</style></head>
+<body>
+<div class="announcement">A NEW POINT OF VIEW ON EVERYDAY STYLE</div>
+<header class="site-header"><a class="brand-lockup" href="index.html"><span class="brand-name">MAN MODE</span></a><nav class="main-nav"><a href="index.html">HOME</a><a href="products.html">SHOP</a></nav></header>
+<main class="confirm-wrap"><p class="eyebrow">MAN MODE · ORDER UPDATE</p>
+<section class="confirm-card" id="confirmation" aria-live="polite">
+<div class="confirm-mark" aria-hidden="true">✓</div><h1>অর্ডার গ্রহণ করা হয়েছে!</h1>
+<p class="muted">আপনার অর্ডারটি সফলভাবে জমা হয়েছে। নিচে Order ID ও পরবর্তী করণীয় দেওয়া আছে।</p>
+<div class="confirm-row"><span>Order ID</span><strong class="confirm-id" id="orderId">—</strong></div>
+<div class="confirm-row"><span>ডেলিভারি চার্জ</span><strong id="shipping">—</strong></div>
+<div class="confirm-row"><span>এখন পরিশোধ</span><strong id="advance">—</strong></div>
+<div class="confirm-row"><span>পণ্য হাতে পেয়ে দেবেন</span><strong id="due">—</strong></div>
+<div class="pay-box" id="paymentInfo"></div>
+<p class="muted">অর্ডারের অবস্থা Pending থাকবে। bKash অগ্রিম পাঠালে দোকানের মালিক টাকা যাচাই করে অর্ডার নিশ্চিত করবেন।</p>
+<a class="action-link" href="index.html">SHOP MORE</a>
+</section></main>
+<script>
+(() => {
+  const box=document.getElementById("confirmation");
+  const money=n=>"৳ "+new Intl.NumberFormat("en-BD",{maximumFractionDigits:0}).format(Number(n)||0);
+  let order; try{order=JSON.parse(sessionStorage.getItem("manmode_last_order")||"null")}catch(_){}
+  if(!order||!order.orderId){box.innerHTML="<h1>অর্ডারের তথ্য পাওয়া যায়নি</h1><p>এই পেজটি অর্ডার জমা দেওয়ার পরেই দেখানো হয়। অর্ডার সম্পর্কে নিশ্চিত হতে দোকানের সঙ্গে যোগাযোগ করুন।</p><a class='action-link' href='index.html'>BACK TO SHOP</a>";return;}
+  document.getElementById("orderId").textContent=order.orderId;
+  document.getElementById("shipping").textContent=money(order.shipping);
+  document.getElementById("advance").textContent=money(order.advance);
+  document.getElementById("due").textContent=money(order.dueOnDelivery);
+  const info=document.getElementById("paymentInfo");
+  if(order.isFreeArea){info.textContent="আপনার এলাকায় ফ্রি ডেলিভারি। কোনো অগ্রিম লাগবে না। পণ্য হাতে পেয়ে Cash on Delivery-তে টাকা পরিশোধ করুন।";}
+  else{
+    const title=document.createElement("strong");title.textContent="bKash Personal Number-এ Send Money করুন";
+    const number=document.createElement("p");number.style.cssText="font-size:22px;font-weight:800;letter-spacing:1px";number.textContent=order.bkashNumber||"দোকানের bKash নম্বর সেট করা নেই";
+    const detail=document.createElement("p");detail.textContent="এখন "+money(order.advance)+" Send Money করুন। Reference হিসেবে Order ID ব্যবহার করুন: "+order.orderId+". "+(order.bkashInstruction||"");
+    info.append(title,number,detail);
+  }
+})();
+</script></body></html>
