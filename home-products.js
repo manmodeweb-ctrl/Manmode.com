@@ -43,7 +43,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       price.className = "shop-card-price";
       const amount = Number(product.price);
       price.textContent = Number.isFinite(amount) ? "৳ " + new Intl.NumberFormat("en-BD", {maximumFractionDigits:0}).format(amount) : "";
-      details.append(category, name, price);
+      const add = document.createElement("button");
+      add.type = "button";
+      add.className = "home-add-cart";
+      add.textContent = Number(product.stock ?? 1) > 0 ? "ADD TO CART +" : "OUT OF STOCK";
+      add.disabled = Number(product.stock ?? 1) <= 0;
+      add.addEventListener("click", event => {
+        event.preventDefault(); event.stopPropagation();
+        if (window.ManModeCart) { window.ManModeCart.add(product); add.textContent = "ADDED ✓"; setTimeout(() => { add.textContent = "ADD TO CART +"; }, 1400); }
+      });
+      details.append(category, name, price, add);
       card.append(media, details);
       grid.appendChild(card);
     });
