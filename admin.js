@@ -169,7 +169,7 @@
     heroCopy:"A considered collection for the way you move through the world. Simple choices. Strong presence.",
     buttonText:"DISCOVER THE COLLECTION",
     preset:"midnight", colors:{bg:"#101010",surface:"#191919",text:"#f5f2eb",muted:"#aaa49a",accent:"#c6a36b"},
-    sections:{announcement:true,hero:true,categories:true,products:true,about:true,contact:true,footer:true}
+    sections:{announcement:true,hero:true,categories:true,products:true,about:true,contact:true,footer:true},contact:{whatsapp:"",email:"",phone:"",address:"",instagram:"",facebook:""}
   };
   let themeDraft = JSON.parse(JSON.stringify(defaultTheme));
   const themeVal = id => $(id).value.trim();
@@ -178,10 +178,10 @@
     try{
       const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
       if(error) throw error;
-      themeDraft={...defaultTheme,...(data?.value||{}),logoUrl:(data?.value?.logoUrl||data?.value?.logo||""),bannerUrl:(data?.value?.bannerUrl||""),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})}};
+      themeDraft={...defaultTheme,...(data?.value||{}),logoUrl:(data?.value?.logoUrl||data?.value?.logo||""),bannerUrl:(data?.value?.bannerUrl||""),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})},contact:{...defaultTheme.contact,...(data?.value?.contact||{})}};
       const set=(id,v)=>{if($(id)) $(id).value=v??"";};
       set("themeLogoText",themeDraft.logoText);set("themeAnnouncement",themeDraft.announcement);set("themeEyebrow",themeDraft.eyebrow);
-      set("themeHeroTitle",themeDraft.heroTitle);set("themeHeroHighlight",themeDraft.heroHighlight);set("themeHeroCopy",themeDraft.heroCopy);set("themeButtonText",themeDraft.buttonText);
+      set("themeHeroTitle",themeDraft.heroTitle);set("themeHeroHighlight",themeDraft.heroHighlight);set("themeHeroCopy",themeDraft.heroCopy);set("themeButtonText",themeDraft.buttonText);set("contactWhatsApp",themeDraft.contact.whatsapp);set("contactEmail",themeDraft.contact.email);set("contactPhone",themeDraft.contact.phone);set("contactAddress",themeDraft.contact.address);set("contactInstagram",themeDraft.contact.instagram);set("contactFacebook",themeDraft.contact.facebook);
       set("themeAccent",themeDraft.colors.accent);set("themeBg",themeDraft.colors.bg);set("themeSurface",themeDraft.colors.surface);set("themeText",themeDraft.colors.text);set("themeMuted",themeDraft.colors.muted);set("themePreset",themeDraft.preset);
       ["Announcement","Hero","Categories","Products","About","Contact","Footer"].forEach(n=>{const key=n.toLowerCase();$("toggle"+n).checked=themeDraft.sections[key]!==false;});
       $("themeStatus").textContent="Saved settings loaded. Edit and publish when ready.";
@@ -220,7 +220,7 @@
   $("resetThemeBtn").addEventListener("click",()=>{themeDraft=JSON.parse(JSON.stringify(defaultTheme));$("themeLogoFile").value="";$("themeBannerFile").value="";loadThemeSettingsFromDefault();});
   function loadThemeSettingsFromDefault(){
     const d=defaultTheme;const set=(id,v)=>$(id).value=v;
-    set("themeLogoText",d.logoText);set("themeAnnouncement",d.announcement);set("themeEyebrow",d.eyebrow);set("themeHeroTitle",d.heroTitle);set("themeHeroHighlight",d.heroHighlight);set("themeHeroCopy",d.heroCopy);set("themeButtonText",d.buttonText);
+    set("themeLogoText",d.logoText);set("themeAnnouncement",d.announcement);set("themeEyebrow",d.eyebrow);set("themeHeroTitle",d.heroTitle);set("themeHeroHighlight",d.heroHighlight);set("themeHeroCopy",d.heroCopy);set("themeButtonText",d.buttonText);set("contactWhatsApp",d.contact.whatsapp);set("contactEmail",d.contact.email);set("contactPhone",d.contact.phone);set("contactAddress",d.contact.address);set("contactInstagram",d.contact.instagram);set("contactFacebook",d.contact.facebook);
     set("themeAccent",d.colors.accent);set("themeBg",d.colors.bg);set("themeSurface",d.colors.surface);set("themeText",d.colors.text);set("themeMuted",d.colors.muted);set("themePreset",d.preset);
     Object.keys(d.sections).forEach(k=>$("toggle"+k[0].toUpperCase()+k.slice(1)).checked=d.sections[k]);
     $("themeStatus").textContent="Defaults loaded in the editor. Press SAVE & PUBLISH to apply them.";
