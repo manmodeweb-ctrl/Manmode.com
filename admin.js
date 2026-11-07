@@ -1,7 +1,7 @@
 // MAN MODE Admin Studio — authenticated Supabase store management.
 (() => {
   const $ = (id) => document.getElementById(id);
-  const state = { user:null, products:[], orders:[], categories:[] };
+  const state = { user:null, products:[], orders:[], categories:[], orderItems:[] };
   const money = value => "৳ " + new Intl.NumberFormat("en-BD",{maximumFractionDigits:0}).format(Number(value)||0);
   const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const say = message => { $("notice").textContent = message || ""; };
@@ -53,13 +53,14 @@
   async function refreshAll() {
     say("Refreshing store data…");
     try {
-      const [p,o,c]=await Promise.all([
+      const [p,o,c,oi]=await Promise.all([
         supabaseClient.from("products").select("*").order("created_at",{ascending:false}),
         supabaseClient.from("orders").select("*").order("created_at",{ascending:false}),
-        supabaseClient.from("categories").select("*").order("name")
+        supabaseClient.from("categories").select("*").order("name"),
+        supabaseClient.from("order_items").select("*").order("product_name")
       ]);
-      if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error;
-      state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[];
+      if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error; if(oi.error) throw oi.error; if(arguments.length){};
+      state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[]; state.orderItems=oi.data||[]; state.orderItems=arguments.length?state.orderItems:state.orderItems;
       renderOverview(); renderProducts(); renderOrders(); renderCategories(); fillCategoryOptions();
       say("Store data updated.");
     } catch(error) { say("Could not load store data: "+error.message); }
@@ -176,8 +177,9 @@
   async function loadThemeSettings(){
     $("themeStatus").textContent="Loading saved website settings…";
     try{
-      const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
-      if(error) throw error;
+      const [{data,error},{data:checkoutData,error:checkoutError}]=await Promise.all([supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle(),supabaseClient.from("site_settings").select("value").eq("key","checkout_settings").maybeSingle()]);
+      if(error) throw error; if(checkoutError) throw checkoutError;
+      const checkout=checkoutData?.value||{}; $("deliveryFee").value=checkout.delivery_fee??0; $("freeShippingMinimum").value=checkout.free_shipping_minimum??0; $("deliveryNote").value=checkout.delivery_note||""; $("codEnabled").checked=checkout.cod_enabled!==false;
       themeDraft={...defaultTheme,...(data?.value||{}),logoUrl:(data?.value?.logoUrl||data?.value?.logo||""),bannerUrl:(data?.value?.bannerUrl||""),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})},contact:{...defaultTheme.contact,...(data?.value?.contact||{})}};
       const set=(id,v)=>{if($(id)) $(id).value=v??"";};
       set("themeLogoText",themeDraft.logoText);set("themeAnnouncement",themeDraft.announcement);set("themeEyebrow",themeDraft.eyebrow);
@@ -208,8 +210,8 @@
         heroCopy:themeVal("themeHeroCopy"),buttonText:themeVal("themeButtonText"),preset:themeVal("themePreset"),
         colors:{accent:themeVal("themeAccent"),bg:themeVal("themeBg"),surface:themeVal("themeSurface"),text:themeVal("themeText"),muted:themeVal("themeMuted")},
         sections:{announcement:$("toggleAnnouncement").checked,hero:$("toggleHero").checked,categories:$("toggleCategories").checked,products:$("toggleProducts").checked,about:$("toggleAbout").checked,contact:$("toggleContact").checked,footer:$("toggleFooter").checked},contact:{whatsapp:themeVal("contactWhatsApp"),email:themeVal("contactEmail"),phone:themeVal("contactPhone"),address:themeVal("contactAddress"),instagram:themeVal("contactInstagram"),facebook:themeVal("contactFacebook")}};
-      const {error}=await supabaseClient.from("site_settings").upsert({key:"active_theme",value:themeDraft,updated_at:new Date().toISOString()},{onConflict:"key"});
-      if(error)throw error;
+      const [{error},{error:checkoutSaveError}]=await Promise.all([supabaseClient.from("site_settings").upsert({key:"active_theme",value:themeDraft,updated_at:new Date().toISOString()},{onConflict:"key"}),supabaseClient.from("site_settings").upsert({key:"checkout_settings",value:{delivery_fee:Math.max(0,Number(themeVal("deliveryFee"))||0),free_shipping_minimum:Math.max(0,Number(themeVal("freeShippingMinimum"))||0),delivery_note:themeVal("deliveryNote"),cod_enabled:$("codEnabled").checked},updated_at:new Date().toISOString()},{onConflict:"key"})]);
+      if(error)throw error; if(checkoutSaveError)throw checkoutSaveError;
       $("themeLogoFile").value="";$("themeBannerFile").value="";
       $("themeStatus").textContent="Published successfully. Open the live website and refresh to see your changes.";
       say("Website design settings published.");
