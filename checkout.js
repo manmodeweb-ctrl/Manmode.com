@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       detail.textContent = "This area is outside the free-delivery list. The store must enable bKash and set its number and advance amount before orders can be placed.";
       paymentInfo.append(heading, detail);
     }
-    btn.disabled = (!settings.cod_enabled && isFreeArea) || (!isFreeArea && !canBkash);
+    btn.disabled = settings.cod_enabled === false || (!isFreeArea && !canBkash);
     btn.textContent = isFreeArea ? "PLACE ORDER · CASH ON DELIVERY" : "PLACE ORDER · PAY DELIVERY ADVANCE";
   }
 
@@ -154,8 +154,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       msg.classList.add("error");
       msg.textContent = error.message || "অর্ডার নেওয়া যায়নি। আবার চেষ্টা করুন।";
     } finally {
-      btn.disabled = false;
-      btn.textContent = isFreeArea ? "PLACE ORDER · CASH ON DELIVERY" : "PLACE ORDER · PAY DELIVERY ADVANCE";
+      updateDelivery();
     }
   });
 });
