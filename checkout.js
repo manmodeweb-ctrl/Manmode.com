@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const items = ManModeCart.items();
   const money = ManModeCart.money;
   let subtotal = 0;
-  let settings = { delivery_fee: 0, free_shipping_minimum: 0, free_delivery_areas: "" };
+  let settings = { inside_chattogram_fee: 70, outside_chattogram_fee: 150 };
   let shipping = 0;
 
   if (!items.length) {
@@ -46,14 +46,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const freeAreas = String(settings.free_delivery_areas || "")
-    .split(/[，,\n]/).map(area => area.trim().toLocaleLowerCase()).filter(Boolean);
-  const isFreeArea = () => freeAreas.includes(String(areaInput.value || "").trim().toLocaleLowerCase());
   const calculateShipping = () => {
-    if (isFreeArea()) return 0;
-    const minimum = Math.max(0, Number(settings.free_shipping_minimum) || 0);
-    if (minimum > 0 && subtotal >= minimum) return 0;
-    return Math.max(0, Number(settings.delivery_fee) || 0);
+    const deliveryArea = String(areaInput.value || "");
+    if (deliveryArea === "inside_chattogram") return Math.max(0, Number(settings.inside_chattogram_fee) || 70);
+    if (deliveryArea === "outside_chattogram") return Math.max(0, Number(settings.outside_chattogram_fee) || 150);
+    return 0;
   };
 
   items.forEach(item => {
