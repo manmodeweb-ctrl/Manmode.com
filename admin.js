@@ -44,8 +44,8 @@
   function go(view) {
     document.querySelectorAll(".side-nav [data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
     document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));
-    $("pageTitle").textContent=({overview:"Overview",products:"Products",orders:"Orders",categories:"Categories"})[view]||"Overview";
-    if(view==="products") renderProducts(); if(view==="orders") renderOrders(); if(view==="categories") renderCategories();
+    $("pageTitle").textContent=({overview:"Overview",products:"Products",orders:"Orders",categories:"Categories",settings:"Website design"})[view]||"Overview";
+    if(view==="products") renderProducts(); if(view==="orders") renderOrders(); if(view==="categories") renderCategories(); if(view==="settings") loadThemeSettings();
   }
   document.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
   document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
@@ -161,6 +161,71 @@
     const {error}=await supabaseClient.from("categories").insert({name,slug:key,active:true});
     if(error)say("Could not add category: "+error.message);else{$("categoryName").value="";say("Category added.");await refreshAll();}
   });
+
+  const defaultTheme = {
+    logoText:"MAN MODE", logoUrl:"", bannerUrl:"",
+    announcement:"A NEW POINT OF VIEW ON EVERYDAY STYLE",
+    eyebrow:"THE MAN MODE EDIT · 2026", heroTitle:"OWN YOUR", heroHighlight:"IDENTITY.",
+    heroCopy:"A considered collection for the way you move through the world. Simple choices. Strong presence.",
+    buttonText:"DISCOVER THE COLLECTION",
+    preset:"midnight", colors:{bg:"#101010",surface:"#191919",text:"#f5f2eb",muted:"#aaa49a",accent:"#c6a36b"},
+    sections:{announcement:true,hero:true,categories:true,products:true,about:true,contact:true,footer:true}
+  };
+  let themeDraft = JSON.parse(JSON.stringify(defaultTheme));
+  const themeVal = id => $(id).value.trim();
+  async function loadThemeSettings(){
+    $("themeStatus").textContent="Loading saved website settings…";
+    try{
+      const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
+      if(error) throw error;
+      themeDraft={...defaultTheme,...(data?.value||{}),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})}};
+      const set=(id,v)=>{if($(id)) $(id).value=v??"";};
+      set("themeLogoText",themeDraft.logoText);set("themeAnnouncement",themeDraft.announcement);set("themeEyebrow",themeDraft.eyebrow);
+      set("themeHeroTitle",themeDraft.heroTitle);set("themeHeroHighlight",themeDraft.heroHighlight);set("themeHeroCopy",themeDraft.heroCopy);set("themeButtonText",themeDraft.buttonText);
+      set("themeAccent",themeDraft.colors.accent);set("themeBg",themeDraft.colors.bg);set("themeSurface",themeDraft.colors.surface);set("themeText",themeDraft.colors.text);set("themeMuted",themeDraft.colors.muted);set("themePreset",themeDraft.preset);
+      ["Announcement","Hero","Categories","Products","About","Contact","Footer"].forEach(n=>{const key=n.toLowerCase();$("toggle"+n).checked=themeDraft.sections[key]!==false;});
+      $("themeStatus").textContent="Saved settings loaded. Edit and publish when ready.";
+    }catch(e){$("themeStatus").textContent="Could not load settings: "+e.message;}
+  }
+  async function uploadThemeAsset(file,label){
+    if(!file)return null;
+    if(!file.type.startsWith("image/"))throw new Error(label+" must be an image file.");
+    if(file.size>6*1024*1024)throw new Error(label+" must be smaller than 6 MB.");
+    const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"").toLowerCase();
+    const path=state.user.id+"/site-"+label.toLowerCase()+"-"+Date.now()+"."+ext;
+    const {error}=await supabaseClient.storage.from("product-images").upload(path,file,{upsert:false});
+    if(error)throw error;
+    return supabaseClient.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+  }
+  $("siteSettingsForm").addEventListener("submit",async e=>{
+    e.preventDefault();const btn=$("saveThemeBtn");btn.disabled=true;$("themeStatus").textContent="Uploading assets and publishing settings…";
+    try{
+      if(!(await isAdmin()))throw new Error("Admin session expired. Sign in again.");
+      const logo=await uploadThemeAsset($("themeLogoFile").files[0],"logo");
+      const banner=await uploadThemeAsset($("themeBannerFile").files[0],"banner");
+      themeDraft={...themeDraft,logoText:themeVal("themeLogoText")||"MAN MODE",logoUrl:logo||themeDraft.logoUrl||"",bannerUrl:banner||themeDraft.bannerUrl||"",
+        announcement:themeVal("themeAnnouncement"),eyebrow:themeVal("themeEyebrow"),heroTitle:themeVal("themeHeroTitle"),heroHighlight:themeVal("themeHeroHighlight"),
+        heroCopy:themeVal("themeHeroCopy"),buttonText:themeVal("themeButtonText"),preset:themeVal("themePreset"),
+        colors:{accent:themeVal("themeAccent"),bg:themeVal("themeBg"),surface:themeVal("themeSurface"),text:themeVal("themeText"),muted:themeVal("themeMuted")},
+        sections:{announcement:$("toggleAnnouncement").checked,hero:$("toggleHero").checked,categories:$("toggleCategories").checked,products:$("toggleProducts").checked,about:$("toggleAbout").checked,contact:$("toggleContact").checked,footer:$("toggleFooter").checked}};
+      const {error}=await supabaseClient.from("site_settings").upsert({key:"active_theme",value:themeDraft,updated_at:new Date().toISOString()},{onConflict:"key"});
+      if(error)throw error;
+      $("themeLogoFile").value="";$("themeBannerFile").value="";
+      $("themeStatus").textContent="Published successfully. Open the live website and refresh to see your changes.";
+      say("Website design settings published.");
+    }catch(err){$("themeStatus").textContent="Save failed: "+err.message;}
+    finally{btn.disabled=false;}
+  });
+  $("reloadSettingsBtn").addEventListener("click",loadThemeSettings);
+  $("resetThemeBtn").addEventListener("click",()=>{themeDraft=JSON.parse(JSON.stringify(defaultTheme));$("themeLogoFile").value="";$("themeBannerFile").value="";loadThemeSettingsFromDefault();});
+  function loadThemeSettingsFromDefault(){
+    const d=defaultTheme;const set=(id,v)=>$(id).value=v;
+    set("themeLogoText",d.logoText);set("themeAnnouncement",d.announcement);set("themeEyebrow",d.eyebrow);set("themeHeroTitle",d.heroTitle);set("themeHeroHighlight",d.heroHighlight);set("themeHeroCopy",d.heroCopy);set("themeButtonText",d.buttonText);
+    set("themeAccent",d.colors.accent);set("themeBg",d.colors.bg);set("themeSurface",d.colors.surface);set("themeText",d.colors.text);set("themeMuted",d.colors.muted);set("themePreset",d.preset);
+    Object.keys(d.sections).forEach(k=>$("toggle"+k[0].toUpperCase()+k.slice(1)).checked=d.sections[k]);
+    $("themeStatus").textContent="Defaults loaded in the editor. Press SAVE & PUBLISH to apply them.";
+  }
+
   // Always require an explicit admin sign-in when this page is opened.
   // A previously persisted Supabase session must not bypass the login screen.
   showLogin();
