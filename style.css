@@ -4,6 +4,9 @@
    ===================================== */
 
 :root {
+  /* CUSTOM HERO BANNER: replace this image URL to change the homepage banner */
+  --hero-image: url('https://images.unsplash.com/photo-1610902209686-dcc8ba828637?auto=format&fit=crop&w=2000&q=85');
+  --hero-position: center 38%;
   --bg: #101010;
   --surface: #191919;
   --surface-light: #222222;
@@ -124,8 +127,8 @@ a {
       rgba(0,0,0,.65) 48%,
       rgba(0,0,0,.12) 100%
     ),
-    url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1800')
-    center 35% / cover no-repeat;
+    var(--hero-image)
+    var(--hero-position) / cover no-repeat;
 }
 
 .hero-shade {
