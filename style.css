@@ -77,11 +77,34 @@ a {
   z-index: 10;
 }
 
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 13px;
+  flex-shrink: 0;
+  text-decoration: none;
+  min-width: 0;
+}
+
 .brand-mark {
   display: block;
   width: 125px;
   height: 42px;
   flex-shrink: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+}
+
+.brand-name {
+  color: #fff;
+  font-family: "Manrope", sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .main-nav {
@@ -462,9 +485,18 @@ a {
     gap: 14px;
   }
 
+  .brand-lockup {
+    gap: 9px;
+  }
+
   .brand-mark {
     width: 80px;
     height: 30px;
+  }
+
+  .brand-name {
+    font-size: 15px;
+    letter-spacing: 1.5px;
   }
 
   .main-nav {
