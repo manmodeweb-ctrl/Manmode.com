@@ -662,3 +662,6 @@ a {
 .home-add-cart{display:block;width:100%;margin-top:12px;padding:12px 10px;border:0;background:var(--gold);color:#111;font:800 10px var(--font);letter-spacing:1px;cursor:pointer}
 .home-add-cart:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:768px){.brand-mark{width:68px;height:28px}.brand-name{font-size:15px}.home-add-cart{padding:11px 7px;font-size:9px}}
+
+/* Editable store contact details */
+.contact-strip{flex-wrap:wrap}.contact-details{display:flex;flex-wrap:wrap;gap:12px 22px;width:100%;margin-top:24px}.contact-detail,.footer-socials a{color:var(--gold);font-size:12px;text-decoration:none;border-bottom:1px solid rgba(198,163,107,.35);padding-bottom:5px}.footer-socials{display:flex;flex-wrap:wrap;gap:18px;margin-top:20px}.footer-address{width:100%;color:var(--muted);font-size:11px}
