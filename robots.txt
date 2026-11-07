@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Sitemap: https://manmodeweb-ctrl.github.io/Manmode.com/sitemap.xml
