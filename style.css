@@ -580,3 +580,44 @@ a {
     font-size: 9px;
   }
 }
+
+
+/* URBAN STREETWEAR SHOPPING HOMEPAGE */
+.shop-home { padding-top: 76px; padding-bottom: 90px; }
+.category-strip { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:12px; margin:30px 0 68px; }
+.category-tile { min-width:0; min-height:112px; padding:16px 8px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; background:#1b1b1b; border:1px solid rgba(255,255,255,.12); text-align:center; transition:transform .2s,border-color .2s,background .2s; }
+.category-tile:hover { transform:translateY(-4px); border-color:var(--gold); background:#242424; }
+.category-tile span:last-child { color:#f5f2eb; font-size:9px; font-weight:800; letter-spacing:.8px; }
+.category-icon { color:var(--gold); font-size:27px; line-height:1; }
+.product-section-heading { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:22px; }
+.product-section-heading .eyebrow { margin-bottom:10px; }
+.product-section-heading h2 { font-family:var(--heading); font-size:clamp(28px,4vw,42px); font-weight:800; letter-spacing:-1.5px; }
+.product-section-heading .text-link { white-space:nowrap; }
+.products-status { color:var(--muted); font-size:12px; margin:0 0 16px; }
+.home-product-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+.shop-card { min-width:0; background:#191919; border:1px solid rgba(255,255,255,.08); overflow:hidden; }
+.shop-card-image { height:300px; position:relative; background:#242424; overflow:hidden; }
+.shop-card-image img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .45s; }
+.shop-card:hover .shop-card-image img { transform:scale(1.045); }
+.shop-tag { position:absolute; top:12px; left:12px; padding:6px 9px; background:var(--gold); color:#111; font-size:8px; font-weight:800; letter-spacing:1px; }
+.shop-card-details { padding:15px; }
+.shop-card-category { color:var(--gold); font-size:9px; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+.shop-card-details h3 { color:var(--text); font-size:13px; font-weight:600; line-height:1.4; }
+.shop-card-price { color:var(--gold); font-size:13px; font-weight:700; margin-top:8px; }
+.products-empty { color:var(--muted); padding:20px 0; font-size:13px; }
+@media(max-width:900px) {
+ .category-strip { grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:52px; }
+ .home-product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+ .shop-card-image { height:260px; }
+}
+@media(max-width:520px) {
+ .shop-home { padding:58px 5% 70px; }
+ .category-strip { grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin:22px 0 48px; }
+ .category-tile { min-height:88px; padding:10px 4px; gap:8px; }
+ .category-icon { font-size:22px; }
+ .category-tile span:last-child { font-size:8px; letter-spacing:.3px; }
+ .product-section-heading { align-items:flex-start; flex-direction:column; gap:8px; }
+ .home-product-grid { gap:10px; }
+ .shop-card-image { height:210px; }
+ .shop-card-details { padding:11px; }
+}
