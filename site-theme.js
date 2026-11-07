@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(error||!data?.value)return;
     const t=data.value,root=document.documentElement,colors=t.colors||{},sections=t.sections||{};
     const visibilityStyle=document.createElement("style");
-    visibilityStyle.textContent="[hidden]{display:none!important}";
+    visibilityStyle.textContent="[hidden]{display:none!important}body{background:var(--bg)!important;color:var(--text)!important}.site-header,.shop-card,.catalog-card{background:var(--surface)!important}.brand-story,.site-footer{background:var(--bg)!important}.announcement{background:var(--gold)!important}.primary-link,.shop-tag{background:var(--gold)!important}";
     document.head.appendChild(visibilityStyle);
     const css=(name,value)=>{if(value)root.style.setProperty(name,value);};
     css("--bg",colors.bg);css("--surface",colors.surface);css("--text",colors.text);css("--muted",colors.muted);css("--gold",colors.accent);
