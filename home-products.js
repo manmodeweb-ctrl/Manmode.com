@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (typeof supabaseClient === "undefined") throw new Error("Store connection is unavailable.");
     const { data, error } = await supabaseClient
       .from("products")
-      .select("id,name,price,category,image_url,featured,active,created_at")
+      .select("id,name,price,category,image_url,stock,featured,active,created_at")
       .eq("active", true)
       .order("created_at", { ascending: false });
     if (error) throw error;
