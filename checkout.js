@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (error) throw error;
     if (data?.value) settings = { ...settings, ...data.value };
   } catch (error) {
-    msg.textContent = "Delivery settings could not be loaded. Please refresh and try again.";
+    msg.textContent = error.message || "Store details could not be loaded. Please refresh and try again.";
     msg.classList.add("error");
     btn.disabled = true;
     return;
