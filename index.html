@@ -68,64 +68,27 @@
 
     </section>
 
-    <section class="collections section-wrap" id="collections">
-
+    <section class="shop-home section-wrap" id="collections">
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">BUILT AROUND YOUR STYLE</p>
-          <h2>THE COLLECTIONS</h2>
-        </div>
-
-        <p class="section-note">
-          Find your look. Make it yours.
-        </p>
+        <div><p class="eyebrow">FIND YOUR LOOK</p><h2>SHOP BY CATEGORY</h2></div>
+        <p class="section-note">Pick a category. Find your mode.</p>
       </div>
-
-      <div class="collection-grid">
-
-        <a class="collection-card"
-           href="products.html?category=clothing">
-
-          <div class="collection-photo photo-clothing">
-            <span class="card-number">01</span>
-          </div>
-
-          <div class="card-caption">
-            <h3>CLOTHING</h3>
-            <span>EXPLORE ↗</span>
-          </div>
-
-        </a>
-
-        <a class="collection-card"
-           href="products.html?category=footwear">
-
-          <div class="collection-photo photo-footwear">
-            <span class="card-number">02</span>
-          </div>
-
-          <div class="card-caption">
-            <h3>FOOTWEAR</h3>
-            <span>EXPLORE ↗</span>
-          </div>
-
-        </a>
-
-        <a class="collection-card"
-           href="products.html?category=accessories">
-
-          <div class="collection-photo photo-accessories">
-            <span class="card-number">03</span>
-          </div>
-
-          <div class="card-caption">
-            <h3>ACCESSORIES</h3>
-            <span>EXPLORE ↗</span>
-          </div>
-
-        </a>
-
+      <div class="category-strip" aria-label="Shop categories">
+        <a class="category-tile" href="products.html?category=all"><span class="category-icon">✦</span><span>ALL</span></a>
+        <a class="category-tile" href="products.html?category=clothing"><span class="category-icon">▣</span><span>CLOTHING</span></a>
+        <a class="category-tile" href="products.html?category=t-shirts"><span class="category-icon">▤</span><span>T-SHIRTS</span></a>
+        <a class="category-tile" href="products.html?category=shirts"><span class="category-icon">▧</span><span>SHIRTS</span></a>
+        <a class="category-tile" href="products.html?category=hoodies"><span class="category-icon">◈</span><span>HOODIES</span></a>
+        <a class="category-tile" href="products.html?category=pants"><span class="category-icon">▥</span><span>PANTS</span></a>
+        <a class="category-tile" href="products.html?category=footwear"><span class="category-icon">◉</span><span>SHOES</span></a>
+        <a class="category-tile" href="products.html?category=accessories"><span class="category-icon">◇</span><span>ACCESSORIES</span></a>
       </div>
+      <div class="product-section-heading">
+        <div><p class="eyebrow">THE LATEST PICKS</p><h2>NEW & TRENDING</h2></div>
+        <a class="text-link" href="products.html">VIEW ALL PRODUCTS ↗</a>
+      </div>
+      <p class="products-status" data-products-status>Loading the latest MAN MODE products…</p>
+      <div class="home-product-grid" data-home-products aria-live="polite"></div>
     </section>
 
     <section class="brand-story" id="about">
@@ -184,6 +147,9 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="home-products.js"></script>
 
 </body>
 </html>
