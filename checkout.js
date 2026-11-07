@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const areaInput = form.elements.district;
   const items = ManModeCart.items();
   const money = ManModeCart.money;
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  let subtotal = 0;
   let settings = { delivery_fee: 0, free_shipping_minimum: 0, free_delivery_areas: "" };
   let shipping = 0;
 
@@ -21,6 +21,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     if (typeof supabaseClient === "undefined") throw new Error("Store connection unavailable.");
+    const { data: liveProducts, error: productsError } = await supabaseClient
+      .from("products")
+      .select("id,name,price,stock,active")
+      .in("id", items.map(item => item.id));
+    if (productsError) throw productsError;
+    const productMap = new Map((liveProducts || []).map(product => [String(product.id), product]));
+    if (productMap.size !== items.length) throw new Error("আপনার কার্টের একটি পণ্য আর পাওয়া যাচ্ছে না। Cart থেকে সেটি সরিয়ে আবার চেষ্টা করুন।");
+    for (const item of items) {
+      const product = productMap.get(String(item.id));
+      if (!product || product.active !== true) throw new Error("কার্টের একটি পণ্য বর্তমানে বিক্রির জন্য নেই।");
+      if (Number(product.stock || 0) < Number(item.quantity || 0)) throw new Error("“" + product.name + "” পণ্যের পর্যাপ্ত স্টক নেই। Cart-এ পরিমাণ কমিয়ে আবার চেষ্টা করুন।");
+      item.name = product.name;
+      item.price = Number(product.price);
+    }
+    subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const { data, error } = await supabaseClient.from("site_settings").select("value").eq("key", "checkout_settings").maybeSingle();
     if (error) throw error;
     if (data?.value) settings = { ...settings, ...data.value };
