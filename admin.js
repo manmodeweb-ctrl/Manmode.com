@@ -55,9 +55,9 @@
     try {
       const [p,o,c,oi]=await Promise.all([
         supabaseClient.from("products").select("*").order("created_at",{ascending:false}),
-        supabaseClient.from("orders").select("*").order("created_at",{ascending:false}),
+        supabaseClient.rpc("admin_list_orders"),
         supabaseClient.from("categories").select("*").order("name"),
-        supabaseClient.from("order_items").select("*").order("product_name")
+        supabaseClient.rpc("admin_list_order_items")
       ]);
       if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error; if(oi.error) throw oi.error;
       state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[]; state.orderItems=oi.data||[];
