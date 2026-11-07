@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const status = document.querySelector("[data-products-status]");
   if (!grid) return;
   try {
-    if (!window.supabaseClient) throw new Error("Store connection is unavailable.");
-    const { data, error } = await window.supabaseClient
+    if (typeof supabaseClient === "undefined") throw new Error("Store connection is unavailable.");
+    const { data, error } = await supabaseClient
       .from("products")
       .select("id,name,price,category,image_url,featured,active,created_at")
       .eq("active", true)
