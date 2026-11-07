@@ -178,7 +178,7 @@
     try{
       const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
       if(error) throw error;
-      themeDraft={...defaultTheme,...(data?.value||{}),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})}};
+      themeDraft={...defaultTheme,...(data?.value||{}),logoUrl:(data?.value?.logoUrl||data?.value?.logo||""),bannerUrl:(data?.value?.bannerUrl||""),colors:{...defaultTheme.colors,...(data?.value?.colors||{})},sections:{...defaultTheme.sections,...(data?.value?.sections||{})}};
       const set=(id,v)=>{if($(id)) $(id).value=v??"";};
       set("themeLogoText",themeDraft.logoText);set("themeAnnouncement",themeDraft.announcement);set("themeEyebrow",themeDraft.eyebrow);
       set("themeHeroTitle",themeDraft.heroTitle);set("themeHeroHighlight",themeDraft.heroHighlight);set("themeHeroCopy",themeDraft.heroCopy);set("themeButtonText",themeDraft.buttonText);
