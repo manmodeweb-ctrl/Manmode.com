@@ -59,8 +59,8 @@
         supabaseClient.from("categories").select("*").order("name"),
         supabaseClient.from("order_items").select("*").order("product_name")
       ]);
-      if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error; if(oi.error) throw oi.error; if(arguments.length){};
-      state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[]; state.orderItems=oi.data||[]; state.orderItems=arguments.length?state.orderItems:state.orderItems;
+      if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error; if(oi.error) throw oi.error;
+      state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[]; state.orderItems=oi.data||[];
       renderOverview(); renderProducts(); renderOrders(); renderCategories(); fillCategoryOptions();
       say("Store data updated.");
     } catch(error) { say("Could not load store data: "+error.message); }
