@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(typeof supabaseClient==="undefined")return;
     const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
     if(error||!data?.value)return;
-    const t=data.value,root=document.documentElement,colors=t.colors||{},sections=t.sections||{};
+    const t=data.value,root=document.documentElement,colors=t.colors||{},sections=t.sections||{},contact=t.contact||{};
     const visibilityStyle=document.createElement("style");
     visibilityStyle.textContent="[hidden]{display:none!important}body{background:var(--bg)!important;color:var(--text)!important}.site-header,.shop-card,.catalog-card{background:var(--surface)!important}.brand-story,.site-footer{background:var(--bg)!important}.announcement{background:var(--gold)!important}.primary-link,.shop-tag{background:var(--gold)!important}";
     document.head.appendChild(visibilityStyle);
@@ -21,6 +21,19 @@ document.addEventListener("DOMContentLoaded",async()=>{
       if(t.logoUrl){const img=document.createElement("img");img.src=t.logoUrl;img.alt=t.logoText||"MAN MODE";img.style.cssText="max-width:150px;max-height:46px;object-fit:contain;vertical-align:middle";el.replaceChildren(img);}
       else if(t.logoText){el.textContent=t.logoText;}
     });
+    const strip=document.querySelector(".contact-strip");
+    if(strip){
+      const link=strip.querySelector(".contact-link");
+      const rows=[["WhatsApp",contact.whatsapp,contact.whatsapp?"https://wa.me/"+contact.whatsapp.replace(/[^0-9]/g,""):""],["Email",contact.email,contact.email?"mailto:"+contact.email:""],["Phone",contact.phone,contact.phone?"tel:"+contact.phone.replace(/[^0-9+]/g,""):""]];
+      let list=strip.querySelector(".contact-details");if(!list){list=document.createElement("div");list.className="contact-details";strip.appendChild(list);}list.replaceChildren();
+      rows.forEach(([label,value,url])=>{const a=document.createElement("a");a.className="contact-detail";a.textContent=label+": "+(value||"Add "+label+" in Admin");a.href=url||"admin.html";if(label==="WhatsApp"&&url)a.target="_blank";list.appendChild(a);});
+      if(link){if(contact.email){link.href="mailto:"+contact.email;link.textContent="EMAIL THE STORE ↗";}else if(contact.whatsapp){link.href="https://wa.me/"+contact.whatsapp.replace(/[^0-9]/g,"");link.target="_blank";link.textContent="CHAT ON WHATSAPP ↗";}else{link.href="admin.html";link.textContent="ADD CONTACT DETAILS IN ADMIN ↗";}}
+    }
+    const footer=document.querySelector(".site-footer");
+    if(footer){let social=footer.querySelector(".footer-socials");if(!social){social=document.createElement("div");social.className="footer-socials";footer.appendChild(social);}social.replaceChildren();
+      [["Instagram",contact.instagram],["Facebook",contact.facebook]].forEach(([label,url])=>{const a=document.createElement("a");a.textContent=url?label:"Add "+label+" URL in Admin";a.href=url||"admin.html";if(url){a.target="_blank";a.rel="noopener";}social.appendChild(a);});
+      if(contact.address){const p=document.createElement("p");p.className="footer-address";p.textContent=contact.address;social.appendChild(p);}
+    }
     const hero=document.querySelector(".hero");
     if(hero&&t.eyebrow!==undefined){const e=hero.querySelector(".eyebrow");if(e)e.textContent=t.eyebrow;}
     if(hero&&t.heroTitle!==undefined){const h=hero.querySelector("h1");if(h){h.replaceChildren(document.createTextNode(t.heroTitle+" "));const em=document.createElement("em");em.textContent=t.heroHighlight||"";h.appendChild(document.createElement("br"));h.appendChild(em);}}
