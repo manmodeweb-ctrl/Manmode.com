@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(typeof supabaseClient==="undefined")return;
     const {data,error}=await supabaseClient.from("site_settings").select("value").eq("key","active_theme").maybeSingle();
     if(error||!data?.value)return;
-    const t=data.value,root=document.documentElement,colors=t.colors||{},sections=t.sections||{};
+    const t=data.value,root=document.documentElement,colors=t.colors||{},sections=t.sections||{};\n    const visibilityStyle=document.createElement("style");visibilityStyle.textContent="[hidden]{display:none!important}";document.head.appendChild(visibilityStyle);
     const css=(name,value)=>{if(value)root.style.setProperty(name,value);};
     css("--bg",colors.bg);css("--surface",colors.surface);css("--text",colors.text);css("--muted",colors.muted);css("--gold",colors.accent);
     if(t.bannerUrl)css("--hero-image","url("+JSON.stringify(t.bannerUrl)+")");
