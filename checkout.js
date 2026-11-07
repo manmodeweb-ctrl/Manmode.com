@@ -4,10 +4,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btn = document.getElementById("placeOrder");
   const itemsBox = document.getElementById("checkoutItems");
   const totalBox = document.getElementById("checkoutTotal");
+  const areaInput = form.elements.district;
   const items = ManModeCart.items();
   const money = ManModeCart.money;
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  let settings = { delivery_fee: 0, free_shipping_minimum: 0 };
+  let settings = { delivery_fee: 0, free_shipping_minimum: 0, free_delivery_areas: "" };
+  let shipping = 0;
 
   if (!items.length) {
     form.hidden = true;
@@ -29,9 +31,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const shipping = Number(settings.free_shipping_minimum) > 0 && subtotal >= Number(settings.free_shipping_minimum)
-    ? 0 : Math.max(0, Number(settings.delivery_fee) || 0);
-  const total = subtotal + shipping;
+  const freeAreas = String(settings.free_delivery_areas || "")
+    .split(/[，,\n]/).map(area => area.trim().toLocaleLowerCase()).filter(Boolean);
+  const isFreeArea = () => freeAreas.includes(String(areaInput.value || "").trim().toLocaleLowerCase());
+  const calculateShipping = () => {
+    if (isFreeArea()) return 0;
+    const minimum = Math.max(0, Number(settings.free_shipping_minimum) || 0);
+    if (minimum > 0 && subtotal >= minimum) return 0;
+    return Math.max(0, Number(settings.delivery_fee) || 0);
+  };
 
   items.forEach(item => {
     const p = document.createElement("p");
@@ -42,19 +50,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     p.append(name, price);
     itemsBox.append(p);
   });
+
   const deliveryLine = document.createElement("p");
   const deliveryLabel = document.createElement("span");
   const deliveryValue = document.createElement("strong");
   deliveryLabel.textContent = "Delivery";
-  deliveryValue.textContent = shipping === 0 ? "FREE" : money(shipping);
   deliveryLine.append(deliveryLabel, deliveryValue);
   itemsBox.append(deliveryLine);
-  totalBox.textContent = money(total);
 
   const note = document.createElement("p");
   note.className = "message";
-  note.textContent = "Cash on Delivery · কোনো bKash অগ্রিম লাগবে না। পণ্য হাতে পেয়ে টাকা দেবেন।";
+  note.textContent = "Cash on Delivery · কোনো অগ্রিম bKash লাগবে না। পণ্য হাতে পেয়ে টাকা দেবেন।";
   form.insertBefore(note, btn);
+
+  const deliveryNote = String(settings.delivery_note || "").trim();
+  if (deliveryNote) {
+    const extra = document.createElement("p");
+    extra.className = "message";
+    extra.textContent = deliveryNote;
+    form.insertBefore(extra, btn);
+  }
+
+  const updateSummary = () => {
+    shipping = calculateShipping();
+    deliveryValue.textContent = shipping === 0 ? "FREE" : money(shipping);
+    totalBox.textContent = money(subtotal + shipping);
+  };
+  areaInput.addEventListener("input", updateSummary);
+  updateSummary();
 
   btn.disabled = settings.cod_enabled === false;
   btn.textContent = "ORDER";
@@ -75,15 +98,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     msg.classList.remove("error");
     msg.textContent = "";
     try {
+      shipping = calculateShipping();
       const { data, error } = await supabaseClient.rpc("place_order", {
         p_customer_name: form.customerName.value.trim(),
         p_phone: form.phone.value.trim(),
         p_address: form.address.value.trim(),
-        p_district: form.district.value.trim(),
+        p_district: areaInput.value.trim(),
         p_items: items.map(item => ({ product_id: item.id, quantity: item.quantity }))
       });
       if (error) throw error;
       const orderId = String(data);
+      const total = subtotal + shipping;
       sessionStorage.setItem("manmode_last_order", JSON.stringify({
         orderId, paymentMethod: "cash_on_delivery", subtotal, shipping, total,
         advance: 0, dueOnDelivery: total
