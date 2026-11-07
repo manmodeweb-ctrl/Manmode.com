@@ -161,5 +161,7 @@
     const {error}=await supabaseClient.from("categories").insert({name,slug:key,active:true});
     if(error)say("Could not add category: "+error.message);else{$("categoryName").value="";say("Category added.");await refreshAll();}
   });
-  guard();
+  // Always require an explicit admin sign-in when this page is opened.
+  // A previously persisted Supabase session must not bypass the login screen.
+  showLogin();
 })();
