@@ -27,7 +27,7 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--gold);border-col
 .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #292929;font-size:12px;vertical-align:middle}th{color:#888;font-size:10px;letter-spacing:1px}td strong{font-size:12px}.product-cell{display:flex;align-items:center;gap:10px}.product-cell img{width:42px;height:50px;object-fit:cover;border-radius:4px;background:#222}.pill{font-size:10px;padding:5px 8px;border-radius:20px;background:#28251f;color:var(--gold)}.pill.off{background:#302020;color:#f5a0a0}
 .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:grid;gap:7px}.field label{font-size:11px;color:#bbb}.field.full{grid-column:1/-1}.checks{display:flex;gap:20px;flex-wrap:wrap}.checks label{display:flex;gap:8px;align-items:center;font-size:12px;color:#bbb}.checks input{width:auto}
 #loginGate{max-width:440px;margin:8vh auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:28px}#loginGate h1{font:800 26px 'Manrope'}#loginForm{display:grid;gap:13px}#loginStatus,#notice{font-size:12px;color:var(--gold);min-height:18px}
-.empty{padding:26px;color:#888;text-align:center}.quick-actions{display:flex;gap:8px;flex-wrap:wrap}
+.empty{padding:26px;color:#888;text-align:center}.quick-actions{display:flex;gap:8px;flex-wrap:wrap}.theme-switches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}.theme-switches label{background:#0d0d0d;border:1px solid #333;padding:13px;border-radius:7px}.theme-switches input{accent-color:var(--gold);width:18px;height:18px}
 @media(max-width:850px){.admin-shell{grid-template-columns:1fr}.admin-side{padding:14px;gap:12px;border-right:0;border-bottom:1px solid var(--line)}.side-label,.side-bottom{display:none}.admin-logo{padding:0 6px}.side-nav{display:flex;overflow:auto}.side-nav button{white-space:nowrap;padding:10px}.side-nav button span{width:auto;margin-right:5px}.admin-main{padding:22px 14px 45px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.stats{gap:8px}.stat{padding:14px}.stat strong{font-size:21px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.view-head{align-items:start;flex-direction:column}.topbar{align-items:start;flex-direction:column}}
 </style>
@@ -41,6 +41,7 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--gold);border-col
 <button data-view="products"><span>▦</span> Products</button>
 <button data-view="orders"><span>▤</span> Orders</button>
 <button data-view="categories"><span>◇</span> Categories</button>
+<button data-view="settings"><span>⚙</span> Website design</button>
 </nav><div class="side-bottom"><a href="index.html" target="_blank">↗ View live website</a><button id="logoutBtn">↪ Sign out</button></div></aside>
 <main class="admin-main"><header class="topbar"><div><p class="kicker">CONTROL CENTER / 2026</p><h1 id="pageTitle">Overview</h1></div><div class="user-chip" id="adminIdentity">ADMIN SESSION</div></header>
 <section class="view active" id="view-overview">
@@ -60,6 +61,35 @@ input:focus,select:focus,textarea:focus{outline:1px solid var(--gold);border-col
 <div class="panel"><div class="toolbar"><input id="productSearch" placeholder="Search products…"><select id="productFilter"><option value="all">All products</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="low">Low stock</option></select></div><div class="table-wrap" id="productsTable"><p class="empty">Loading products…</p></div></div></section>
 <section class="view" id="view-orders"><div class="view-head"><div><p class="kicker">SALES & FULFILMENT</p><h2>Orders</h2><p class="muted">Review customer details and update order status.</p></div><button class="btn" id="ordersRefresh">↻ Refresh</button></div><div class="panel"><div class="toolbar"><input id="orderSearch" placeholder="Search customer, phone or order ID…"><select id="orderFilter"><option value="all">All statuses</option><option>pending</option><option>confirmed</option><option>processing</option><option>shipped</option><option>delivered</option><option>cancelled</option></select></div><div class="table-wrap" id="ordersTable"><p class="empty">Loading orders…</p></div></div></section>
 <section class="view" id="view-categories"><div class="view-head"><div><p class="kicker">SHOP NAVIGATION</p><h2>Categories</h2><p class="muted">Create and activate store categories.</p></div></div><div class="panel"><form id="categoryForm" class="toolbar"><input id="categoryName" placeholder="New category name" required><button class="btn primary" type="submit">＋ Add category</button></form><div class="table-wrap" id="categoriesTable"><p class="empty">Loading categories…</p></div></div></section>
+
+<section class="view" id="view-settings">
+<div class="view-head"><div><p class="kicker">LIVE STORE CUSTOMIZATION</p><h2>Website design</h2><p class="muted">Change the storefront and publish your changes without editing code.</p></div><button class="btn" id="reloadSettingsBtn" type="button">↻ Reload</button></div>
+<form id="siteSettingsForm">
+<div class="panel"><h3>Brand identity</h3><div class="form-grid">
+<div class="field"><label>Logo image (PNG, JPG, SVG or WebP)</label><input id="themeLogoFile" type="file" accept="image/*"></div><div class="field"><label>Banner / hero image</label><input id="themeBannerFile" type="file" accept="image/*"></div>
+<div class="field"><label>Logo text fallback</label><input id="themeLogoText" maxlength="40" placeholder="MAN MODE"></div><div class="field"><label>Announcement bar text</label><input id="themeAnnouncement" maxlength="120"></div>
+</div><p class="muted" id="themeAssetStatus">Images upload to the existing product-images storage bucket.</p></div>
+<div class="panel"><h3>Homepage banner text</h3><div class="form-grid">
+<div class="field"><label>Small top line</label><input id="themeEyebrow" maxlength="80"></div><div class="field"><label>Main heading (first line)</label><input id="themeHeroTitle" maxlength="50"></div>
+<div class="field"><label>Highlighted heading</label><input id="themeHeroHighlight" maxlength="50"></div><div class="field"><label>Button label</label><input id="themeButtonText" maxlength="50"></div>
+<div class="field full"><label>Banner description</label><textarea id="themeHeroCopy" rows="3" maxlength="240"></textarea></div>
+</div></div>
+<div class="panel"><h3>Website colors</h3><div class="form-grid">
+<div class="field"><label>Accent / button color</label><input id="themeAccent" type="color"></div><div class="field"><label>Page background</label><input id="themeBg" type="color"></div>
+<div class="field"><label>Card / surface color</label><input id="themeSurface" type="color"></div><div class="field"><label>Main text color</label><input id="themeText" type="color"></div>
+<div class="field"><label>Muted text color</label><input id="themeMuted" type="color"></div>
+<div class="field"><label>Theme preset</label><select id="themePreset"><option value="midnight">Midnight Gold</option><option value="mono">Monochrome</option><option value="forest">Forest</option><option value="royal">Royal Blue</option></select></div>
+</div></div>
+<div class="panel"><h3>Homepage sections & switches</h3><p class="muted">Switch ON/OFF to show or hide each section on the live website.</p>
+<div class="checks theme-switches">
+<label><input type="checkbox" id="toggleAnnouncement"> Announcement bar</label><label><input type="checkbox" id="toggleHero"> Main banner</label>
+<label><input type="checkbox" id="toggleCategories"> Category tiles</label><label><input type="checkbox" id="toggleProducts"> Product grid</label>
+<label><input type="checkbox" id="toggleAbout"> About section</label><label><input type="checkbox" id="toggleContact"> Contact section</label>
+<label><input type="checkbox" id="toggleFooter"> Footer</label>
+</div></div>
+<div class="quick-actions"><button class="btn primary" id="saveThemeBtn" type="submit">SAVE & PUBLISH WEBSITE</button><button class="btn" id="resetThemeBtn" type="button">Reset default design</button><a class="btn" href="index.html" target="_blank">Preview website ↗</a></div><p id="themeStatus" role="status"></p>
+</form></section>
+
 <p id="notice" role="status" aria-live="polite"></p>
 </main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="admin.js?v=admin-login-required-20261107"></script>
