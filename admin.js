@@ -207,7 +207,7 @@
         announcement:themeVal("themeAnnouncement"),eyebrow:themeVal("themeEyebrow"),heroTitle:themeVal("themeHeroTitle"),heroHighlight:themeVal("themeHeroHighlight"),
         heroCopy:themeVal("themeHeroCopy"),buttonText:themeVal("themeButtonText"),preset:themeVal("themePreset"),
         colors:{accent:themeVal("themeAccent"),bg:themeVal("themeBg"),surface:themeVal("themeSurface"),text:themeVal("themeText"),muted:themeVal("themeMuted")},
-        sections:{announcement:$("toggleAnnouncement").checked,hero:$("toggleHero").checked,categories:$("toggleCategories").checked,products:$("toggleProducts").checked,about:$("toggleAbout").checked,contact:$("toggleContact").checked,footer:$("toggleFooter").checked}};
+        sections:{announcement:$("toggleAnnouncement").checked,hero:$("toggleHero").checked,categories:$("toggleCategories").checked,products:$("toggleProducts").checked,about:$("toggleAbout").checked,contact:$("toggleContact").checked,footer:$("toggleFooter").checked},contact:{whatsapp:themeVal("contactWhatsApp"),email:themeVal("contactEmail"),phone:themeVal("contactPhone"),address:themeVal("contactAddress"),instagram:themeVal("contactInstagram"),facebook:themeVal("contactFacebook")}};
       const {error}=await supabaseClient.from("site_settings").upsert({key:"active_theme",value:themeDraft,updated_at:new Date().toISOString()},{onConflict:"key"});
       if(error)throw error;
       $("themeLogoFile").value="";$("themeBannerFile").value="";
