@@ -2,74 +2,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAN MODE | Redefine Your Style</title>
-    <meta name="description" content="Discover premium men's fashion, clothing and lifestyle at MAN MODE.">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <title>MAN MODE | Own Your Identity</title>
+  <meta name="description" content="Discover the MAN MODE collection. Modern menswear, footwear and accessories for confident everyday style.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <header class="navbar">
-        <a href="index.html" class="logo">MAN<span>MODE.</span></a>
+  <div class="announcement">
+    A NEW POINT OF VIEW ON EVERYDAY STYLE
+  </div>
 
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#collections">Collections</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
+  <header class="site-header">
 
-        <a href="cart.html" class="cart">CART (0)</a>
-    </header>
+    <!-- Logo upload option can be added here later -->
+    <a class="brand-mark" href="index.html" aria-label="MAN MODE home"></a>
 
-    <main>
-        <section class="hero" id="home">
-            <div class="hero-content">
-                <p class="eyebrow">THE NEW STANDARD OF STYLE</p>
-                <h1>OWN YOUR<br><span>IDENTITY.</span></h1>
-                <p class="hero-description">
-                    Style is not what you wear. It's how you define yourself.
-                </p>
-                <a href="#collections" class="shop-btn">EXPLORE COLLECTIONS ↗</a>
-            </div>
-        </section>
+    <nav class="main-nav">
+      <a href="#home">Home</a>
+      <a href="#collections">Collections</a>
+      <a href="#about">About us</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
-        <section class="collections" id="collections">
-            <p class="eyebrow">CURATED FOR YOU</p>
-            <h2>THE COLLECTIONS</h2>
+    <a class="header-cart" href="cart.html">
+      CART <span>↗</span>
+    </a>
 
-            <div class="collection-grid">
-                <a href="products.html?category=clothing" class="collection-card">
-                    <div class="collection-image clothing"></div>
-                    <h3>CLOTHING ↗</h3>
-                </a>
+  </header>
 
-                <a href="products.html?category=footwear" class="collection-card">
-                    <div class="collection-image footwear"></div>
-                    <h3>FOOTWEAR ↗</h3>
-                </a>
+  <main>
 
-                <a href="products.html?category=accessories" class="collection-card">
-                    <div class="collection-image accessories"></div>
-                    <h3>ACCESSORIES ↗</h3>
-                </a>
-            </div>
-        </section>
+    <section class="hero" id="home">
 
-        <section class="about" id="about">
-            <p class="eyebrow">MORE THAN JUST FASHION</p>
-            <h2>BE DIFFERENT.<br>BE <span>ICONIC.</span></h2>
-            <p>Designed for those who never settle for ordinary.</p>
-        </section>
-    </main>
+      <div class="hero-shade"></div>
 
-    <footer id="contact">
-        <a href="index.html" class="logo">MAN<span>MODE.</span></a>
-        <p>YOUR STYLE. YOUR RULES.</p>
-        <p>© 2026 MAN MODE. ALL RIGHTS RESERVED.</p>
-    </footer>
+      <div class="hero-content">
+        <p class="eyebrow">THE MAN MODE EDIT · 2026</p>
 
-    <script src="script.js"></script>
+        <h1>
+          OWN YOUR<br>
+          <em>IDENTITY.</em>
+        </h1>
+
+        <p class="hero-copy">
+          A considered collection for the way you move through
+          the world. Simple choices. Strong presence.
+        </p>
+
+        <a class="primary-link" href="#collections">
+          DISCOVER THE COLLECTION <span>↗</span>
+        </a>
+      </div>
+
+      <div class="hero-index">
+        <span>01</span> / THE NEW STANDARD
+      </div>
+
+    </section>
+
+    <section class="collections section-wrap" id="collections">
+
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">BUILT AROUND YOUR STYLE</p>
+          <h2>THE COLLECTIONS</h2>
+        </div>
+
+        <p class="section-note">
+          Find your look. Make it yours.
+        </p>
+      </div>
+
+      <div class="collection-grid">
+
+        <a class="collection-card"
+           href="products.html?category=clothing">
+
+          <div class="collection-photo photo-clothing">
+            <span class="card-number">01</span>
+          </div>
+
+          <div class="card-caption">
+            <h3>CLOTHING</h3>
+            <span>EXPLORE ↗</span>
+          </div>
+
+        </a>
+
+        <a class="collection-card"
+           href="products.html?category=footwear">
+
+          <div class="collection-photo photo-footwear">
+            <span class="card-number">02</span>
+          </div>
+
+          <div class="card-caption">
+            <h3>FOOTWEAR</h3>
+            <span>EXPLORE ↗</span>
+          </div>
+
+        </a>
+
+        <a class="collection-card"
+           href="products.html?category=accessories">
+
+          <div class="collection-photo photo-accessories">
+            <span class="card-number">03</span>
+          </div>
+
+          <div class="card-caption">
+            <h3>ACCESSORIES</h3>
+            <span>EXPLORE ↗</span>
+          </div>
+
+        </a>
+
+      </div>
+    </section>
+
+    <section class="brand-story" id="about">
+
+      <p class="eyebrow">MORE THAN WHAT YOU WEAR</p>
+
+      <h2>
+        LESS NOISE.<br>
+        <em>MORE YOU.</em>
+      </h2>
+
+      <p>
+        MAN MODE is made for those who define their own direction.
+        Thoughtful style, confident essentials, and room to be yourself.
+      </p>
+
+      <a class="text-link" href="#contact">
+        GET TO KNOW US <span>↗</span>
+      </a>
+
+    </section>
+
+    <section class="contact-strip" id="contact">
+
+      <div>
+        <p class="eyebrow">LET'S CONNECT</p>
+        <h2>
+          YOUR NEXT<br>
+          CHAPTER STARTS HERE.
+        </h2>
+      </div>
+
+      <a class="contact-link" href="mailto:">
+        CONTACT MAN MODE <span>↗</span>
+      </a>
+
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+
+    <div class="footer-top">
+      <a class="footer-brand" href="index.html">
+        MAN MODE<span>®</span>
+      </a>
+
+      <p>YOUR STYLE. YOUR RULES.</p>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 MAN MODE. ALL RIGHTS RESERVED.</span>
+      <a href="#home">BACK TO TOP ↑</a>
+    </div>
+
+  </footer>
+
+  <script src="script.js"></script>
+
 </body>
 </html>
