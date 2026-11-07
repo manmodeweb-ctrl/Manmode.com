@@ -75,8 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function updateDelivery() {
     const area = areaInput.value.trim().toLocaleLowerCase();
-    const freeAreas = String(settings.free_delivery_areas || "").split(/[,
-]/).map(x => x.trim().toLocaleLowerCase()).filter(Boolean);
+    const freeAreas = String(settings.free_delivery_areas || "").split(/[,\n]/).map(x => x.trim().toLocaleLowerCase()).filter(Boolean);
     isFreeArea = freeAreas.includes(area) || (Number(settings.free_shipping_minimum) > 0 && subtotal >= Number(settings.free_shipping_minimum));
     shipping = isFreeArea ? 0 : Math.max(0, Number(settings.delivery_fee) || 0);
     advance = isFreeArea ? 0 : Math.min(shipping, Math.max(0, Number(settings.delivery_advance_amount) || 0));
