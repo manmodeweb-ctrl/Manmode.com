@@ -147,12 +147,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         p_payment_method: isFreeArea ? "cash_on_delivery" : "bkash_delivery_advance"
       });
       if (error) throw error;
+      const orderId = String(data);
+      sessionStorage.setItem("manmode_last_order", JSON.stringify({
+        orderId,
+        paymentMethod: isFreeArea ? "cash_on_delivery" : "bkash_delivery_advance",
+        subtotal,
+        shipping,
+        total: subtotal + shipping,
+        advance: isFreeArea ? 0 : advance,
+        dueOnDelivery: subtotal + shipping - (isFreeArea ? 0 : advance),
+        bkashNumber: settings.bkash_number || "",
+        bkashInstruction: settings.bkash_instruction || "",
+        isFreeArea
+      }));
       ManModeCart.clear();
-      form.hidden = true;
-      document.getElementById("checkoutSummary").hidden = true;
-      msg.textContent = "আপনার অর্ডার গ্রহণ করা হয়েছে। Order ID: " + data + ". " +
-        (isFreeArea ? "আপনার এলাকায় ডেলিভারি ফ্রি। পণ্য হাতে পেয়ে টাকা দেবেন।" :
-        "এখন " + money(advance) + " bKash Send Money করুন। Reference হিসেবে Order ID ব্যবহার করুন। বাকি টাকা পণ্য হাতে পেয়ে দেবেন। দোকান টাকা যাচাই করে অর্ডার Confirm করবে।");
+      window.location.assign("order-success.html");
     } catch (error) {
       msg.classList.add("error");
       msg.textContent = error.message || "অর্ডার নেওয়া যায়নি। আবার চেষ্টা করুন।";
