@@ -16,9 +16,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!products.length) return;
     grid.replaceChildren();
     products.forEach(product => {
-      const card = document.createElement("a");
+      const card = document.createElement("article");
       card.className = "shop-card";
-      card.href = "products.html?category=" + encodeURIComponent(String(product.category || "all").toLowerCase());
       const media = document.createElement("div");
       media.className = "shop-card-image";
       const img = document.createElement("img");
@@ -52,7 +51,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         event.preventDefault(); event.stopPropagation();
         if (window.ManModeCart) { window.ManModeCart.add(product); add.textContent = "ADDED ✓"; setTimeout(() => { add.textContent = "ADD TO CART +"; }, 1400); }
       });
-      details.append(category, name, price, add);
+      const view = document.createElement("a");
+      view.className = "shop-card-view";
+      view.href = "products.html?category=" + encodeURIComponent(String(product.category || "all").toLowerCase());
+      view.textContent = "VIEW COLLECTION ↗";
+      details.append(category, name, price, add, view);
       card.append(media, details);
       grid.appendChild(card);
     });
