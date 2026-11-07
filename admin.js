@@ -52,18 +52,41 @@
 
   async function refreshAll() {
     say("Refreshing store data…");
+    const errors = [];
     try {
-      const [p,o,c,oi]=await Promise.all([
+      const [p,o,c,oi] = await Promise.all([
         supabaseClient.from("products").select("*").order("created_at",{ascending:false}),
         supabaseClient.rpc("admin_list_orders"),
         supabaseClient.from("categories").select("*").order("name"),
         supabaseClient.rpc("admin_list_order_items")
       ]);
-      if(p.error) throw p.error; if(o.error) throw o.error; if(c.error) throw c.error; if(oi.error) throw oi.error;
-      state.products=p.data||[]; state.orders=o.data||[]; state.categories=c.data||[]; state.orderItems=oi.data||[];
-      renderOverview(); renderProducts(); renderOrders(); renderCategories(); fillCategoryOptions();
-      say("Store data updated.");
-    } catch(error) { say("Could not load store data: "+error.message); }
+
+      if (p.error) { errors.push("Products: " + p.error.message); state.products=[]; }
+      else state.products = p.data || [];
+
+      if (o.error) { errors.push("Orders: " + o.error.message); state.orders=[]; }
+      else state.orders = o.data || [];
+
+      if (c.error) { errors.push("Categories: " + c.error.message); state.categories=[]; }
+      else state.categories = c.data || [];
+
+      if (oi.error) { errors.push("Order items: " + oi.error.message); state.orderItems=[]; }
+      else state.orderItems = oi.data || [];
+
+      renderOverview();
+      renderProducts();
+      renderOrders();
+      renderCategories();
+      fillCategoryOptions();
+
+      if (errors.length) {
+        say("Partial data loaded. " + state.orders.length + " orders loaded. " + errors.join(" | "));
+      } else {
+        say("Store data updated. " + state.orders.length + " orders loaded.");
+      }
+    } catch(error) {
+      say("Refresh failed: " + (error?.message || String(error)));
+    }
   }
   $("refreshBtn").addEventListener("click",refreshAll); $("ordersRefresh").addEventListener("click",refreshAll);
 
