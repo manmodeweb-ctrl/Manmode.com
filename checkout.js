@@ -5,7 +5,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const itemsBox = document.getElementById("checkoutItems");
   const totalBox = document.getElementById("checkoutTotal");
   const areaInput = form.elements.district;
-  const items = ManModeCart.items();
+  let directBuy = null;
+  try { directBuy = JSON.parse(sessionStorage.getItem("manmode_buy_now") || "null"); } catch { directBuy = null; }
+  const directMode = !!(directBuy && directBuy.id);
+  const items = directMode ? [{...directBuy, quantity:1}] : ManModeCart.items();
   const money = ManModeCart.money;
   // Aggregate quantities across size/color variants so stock is checked per product.
   const requestedByProduct = new Map();
@@ -131,7 +134,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         orderId, paymentMethod: "cash_on_delivery", subtotal, shipping, total,
         advance: 0, dueOnDelivery: total
       }));
-      ManModeCart.clear();
+      if (directMode) sessionStorage.removeItem("manmode_buy_now");
+      else ManModeCart.clear();
       window.location.assign("order-success.html");
     } catch (error) {
       msg.classList.add("error");
