@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const areaInput = form.elements.district;
   let directBuy = null;
   try { directBuy = JSON.parse(sessionStorage.getItem("manmode_buy_now") || "null"); } catch { directBuy = null; }
-  const directMode = !!(directBuy && directBuy.id);
+  const directMode = new URLSearchParams(location.search).get("buy_now") === "1" && !!(directBuy && directBuy.id);
   const items = directMode ? [{...directBuy, quantity:1}] : ManModeCart.items();
   const money = ManModeCart.money;
   // Aggregate quantities across size/color variants so stock is checked per product.
