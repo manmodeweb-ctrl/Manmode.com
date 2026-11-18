@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     products.forEach(product => {
       const card = document.createElement("article");
       card.className = "shop-card";
+      const mediaLink = document.createElement("a");
+      mediaLink.href = "product-detail.html?id=" + encodeURIComponent(product.id);
+      mediaLink.className = "product-detail-link";
       const media = document.createElement("div");
       media.className = "shop-card-image";
       const img = document.createElement("img");
@@ -25,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       img.src = product.image_url || "https://placehold.co/600x750/222222/eeeeee?text=MAN+MODE";
       img.alt = product.name || "MAN MODE product";
       media.appendChild(img);
+      mediaLink.appendChild(media);
       if (product.featured) {
         const tag = document.createElement("span");
         tag.className = "shop-tag";
@@ -37,7 +41,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       category.className = "shop-card-category";
       category.textContent = product.category || "MAN MODE";
       const name = document.createElement("h3");
-      name.textContent = product.name || "New arrival";
+      const nameLink = document.createElement("a");
+      nameLink.href = "product-detail.html?id=" + encodeURIComponent(product.id);
+      nameLink.className = "product-detail-link";
+      nameLink.textContent = product.name || "New arrival";
+      name.appendChild(nameLink);
       const price = document.createElement("p");
       price.className = "shop-card-price";
       const amount = Number(product.price);
@@ -53,10 +61,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       const view = document.createElement("a");
       view.className = "shop-card-view";
-      view.href = "products.html?category=" + encodeURIComponent(String(product.category || "all").toLowerCase());
-      view.textContent = "VIEW COLLECTION ↗";
+      view.href = "product-detail.html?id=" + encodeURIComponent(product.id);
+      view.textContent = "VIEW DETAILS ↗";
       details.append(category, name, price, add, view);
-      card.append(media, details);
+      card.append(mediaLink, details);
       grid.appendChild(card);
     });
   } catch (error) {
