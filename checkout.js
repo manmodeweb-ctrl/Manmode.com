@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const areaInput = form.elements.district;
   const items = ManModeCart.items();
   const money = ManModeCart.money;
+  // Aggregate quantities across size/color variants so stock is checked per product.
+  const requestedByProduct = new Map();
+  items.forEach(item => {
+    const productId = String(item.id);
+    requestedByProduct.set(productId, (requestedByProduct.get(productId) || 0) + Number(item.quantity || 0));
+  });
   let subtotal = 0;
   let settings = { inside_chattogram_fee: 70, outside_chattogram_fee: 150 };
   let shipping = 0;
