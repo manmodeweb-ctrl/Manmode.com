@@ -7,6 +7,8 @@
   const say = message => { $("notice").textContent = message || ""; };
   const fail = (box,error) => { box.textContent = error?.message || String(error); };
   const slug = value => String(value||"").trim().toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const parseOptions = value => [...new Set(String(value||"").split(",").map(v=>v.trim()).filter(Boolean))];
+  const formatOptions = value => Array.isArray(value) ? value.join(", ") : "";
   const fallbackCategories = ["Clothing","T-Shirts","Shirts","Hoodies","Pants","Footwear","Accessories"];
   const date = value => value ? new Date(value).toLocaleDateString("en-BD",{day:"2-digit",month:"short",year:"numeric"}) : "—";
 
@@ -130,7 +132,7 @@
   }
   $("productSearch").addEventListener("input",renderProducts); $("productFilter").addEventListener("change",renderProducts);
   function resetProductForm() {
-    $("productForm").reset(); $("productId").value=""; $("productStock").value=0; $("productActive").checked=true;
+    $("productForm").reset(); $("productId").value=""; $("productStock").value=0; $("productSizes").value=""; $("productColors").value=""; $("productActive").checked=true;
     $("productEditorTitle").textContent="Add product"; $("saveProductBtn").textContent="Save product"; $("productStatus").textContent="";
   }
   $("newProductBtn").addEventListener("click",()=>{$("productEditor").hidden=false;resetProductForm();$("productEditor").scrollIntoView({behavior:"smooth"});});
@@ -140,7 +142,7 @@
     $("productEditor").hidden=false; $("productEditorTitle").textContent="Edit product"; $("saveProductBtn").textContent="Update product";
     $("productId").value=p.id; $("productName").value=p.name||""; fillCategoryOptions(); $("productCategory").value=p.category||"";
     $("productPrice").value=p.price??""; $("oldPrice").value=p.old_price??""; $("productStock").value=p.stock??0;
-    $("productDescription").value=p.description||""; $("productFeatured").checked=!!p.featured; $("productActive").checked=p.active!==false;
+    $("productDescription").value=p.description||""; $("productSizes").value=formatOptions(p.sizes); $("productColors").value=formatOptions(p.colors); $("productFeatured").checked=!!p.featured; $("productActive").checked=p.active!==false;
     $("productStatus").textContent="Choose a new image only if you want to replace the current one.";
     $("productEditor").scrollIntoView({behavior:"smooth"});
   }
@@ -159,7 +161,7 @@
       if(!(await isAdmin())) throw new Error("Admin session expired. Please sign in again.");
       const id=$("productId").value, old=state.products.find(p=>p.id===id);
       const uploaded=await uploadImage($("productImage").files[0]);
-      const record={name:$("productName").value.trim(),category:$("productCategory").value,price:Number($("productPrice").value),old_price:$("oldPrice").value?Number($("oldPrice").value):null,stock:Number($("productStock").value),description:$("productDescription").value.trim(),featured:$("productFeatured").checked,active:$("productActive").checked,image_url:uploaded||old?.image_url||null};
+      const record={name:$("productName").value.trim(),category:$("productCategory").value,price:Number($("productPrice").value),old_price:$("oldPrice").value?Number($("oldPrice").value):null,stock:Number($("productStock").value),description:$("productDescription").value.trim(),sizes:parseOptions($("productSizes").value),colors:parseOptions($("productColors").value),featured:$("productFeatured").checked,active:$("productActive").checked,image_url:uploaded||old?.image_url||null};
       const result=id?await supabaseClient.from("products").update(record).eq("id",id):await supabaseClient.from("products").insert(record);
       if(result.error) throw result.error;
       $("productStatus").textContent=id?"Product updated successfully.":"Product added successfully.";
@@ -182,7 +184,7 @@
     const q=$("orderSearch").value.toLowerCase(),filter=$("orderFilter").value;
     const rows=state.orders.filter(o=>(filter==="all"||String(o.status||"pending")===filter)&&[o.customer_name,o.phone,o.id].some(v=>String(v||"").toLowerCase().includes(q)));
     const body=rows.map(o=>{
-      const lines=state.orderItems.filter(i=>i.order_id===o.id).map(i=>esc(i.product_name)+" × "+i.quantity).join(", ");
+      const lines=state.orderItems.filter(i=>i.order_id===o.id).map(i=>esc(i.product_name)+" × "+i.quantity+((i.selected_size||i.selected_color)?" ("+[i.selected_size?"Size: "+esc(i.selected_size):"",i.selected_color?"Color: "+esc(i.selected_color):""].filter(Boolean).join(" · ")+")":"")).join(", ");
       const status=["pending","confirmed","processing","shipped","delivered","cancelled"].map(s=>`<option value="${s}" ${String(o.status||"pending")===s?"selected":""}>${s.toUpperCase()}</option>`).join("");
       return `<tr><td><strong>#${esc(String(o.id).slice(0,8))}</strong><br><span class="muted">${esc(o.district||"")}</span></td><td>${esc(o.customer_name)}<br><span class="muted">${esc(o.address||"")}</span><br><span class="muted">${lines}</span></td><td>${esc(o.phone)}</td><td>${money(o.total_amount)}<br><span class="muted">Delivery: ${money(o.shipping_fee||0)}</span><br><span class="muted">Advance: ${money(o.advance_amount||0)} · Due at delivery: ${money(Math.max(0,Number(o.total_amount||0)-Number(o.advance_amount||0)))}</span><br><span class="muted">Method: ${esc(o.payment_method||"cash_on_delivery")}</span></td><td>${date(o.created_at)}</td><td><select data-order-status="${esc(o.id)}">${status}</select></td></tr>`;
     }).join("");
