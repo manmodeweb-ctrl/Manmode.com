@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(getSize&&!size){errorBox.textContent="Please select a size.";return;}
         if(getColor&&!color){errorBox.textContent="Please select a color.";return;}
         sessionStorage.setItem("manmode_buy_now",JSON.stringify({...p,quantity:1,selected_size:size,selected_color:color}));
-        location.href="checkout.html";
+        location.href="checkout.html?buy_now=1";
       });
       const view=document.createElement("a"); view.className="catalog-view"; view.href="product-detail.html?id="+encodeURIComponent(p.id); view.textContent="VIEW DETAILS ↗";
       view.style.cssText="display:block;text-align:center;margin-top:12px;color:#c6a36b;font-size:10px;font-weight:800;letter-spacing:1px";
