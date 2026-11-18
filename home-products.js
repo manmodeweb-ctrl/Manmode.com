@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (getSize && !size) { variantError.textContent = "Please select a size."; return; }
         if (getColor && !color) { variantError.textContent = "Please select a color."; return; }
         sessionStorage.setItem("manmode_buy_now", JSON.stringify({...product, quantity:1, selected_size:size, selected_color:color}));
-        window.location.href = "checkout.html";
+        window.location.href = "checkout.html?buy_now=1";
       });
       const view = document.createElement("a");
       buy.style.cssText = "width:100%;margin-top:8px;padding:12px;background:transparent;color:#c6a36b;border:1px solid #c6a36b;font-weight:800;cursor:pointer";
