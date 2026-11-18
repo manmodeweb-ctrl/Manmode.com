@@ -77,7 +77,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         errorBox.textContent=""; add.textContent="ADDED ✓";
         setTimeout(()=>{add.textContent="ADD TO CART +";},1400);
       });
-      info.append(errorBox,add); card.append(mediaLink,info); grid.append(card);
+      const buy=document.createElement("button"); buy.type="button"; buy.className="catalog-buy-now"; buy.textContent="BUY NOW";
+      buy.style.cssText="width:100%;margin-top:8px;padding:12px;background:transparent;color:#c6a36b;border:1px solid #c6a36b;font-weight:800;cursor:pointer";
+      buy.disabled=Number(p.stock)<=0;
+      buy.addEventListener("click",()=>{
+        const size=getSize?getSize():"", color=getColor?getColor():"";
+        if(getSize&&!size){errorBox.textContent="Please select a size.";return;}
+        if(getColor&&!color){errorBox.textContent="Please select a color.";return;}
+        sessionStorage.setItem("manmode_buy_now",JSON.stringify({...p,quantity:1,selected_size:size,selected_color:color}));
+        location.href="checkout.html";
+      });
+      const view=document.createElement("a"); view.className="catalog-view"; view.href="product-detail.html?id="+encodeURIComponent(p.id); view.textContent="VIEW DETAILS ↗";
+      view.style.cssText="display:block;text-align:center;margin-top:12px;color:#c6a36b;font-size:10px;font-weight:800;letter-spacing:1px";
+      info.append(errorBox,add,buy,view); card.append(mediaLink,info); grid.append(card);
     });
   } catch(e){console.error(e);status.textContent="পণ্য লোড করা যাচ্ছে না। Store connection পরীক্ষা করুন।";}
 });
