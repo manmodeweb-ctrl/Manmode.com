@@ -24,14 +24,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data: liveProducts, error: productsError } = await supabaseClient
       .from("products")
       .select("id,name,price,stock,active")
-      .in("id", items.map(item => item.id));
+      .in("id", [...new Set(items.map(item => item.id))]);
     if (productsError) throw productsError;
     const productMap = new Map((liveProducts || []).map(product => [String(product.id), product]));
-    if (productMap.size !== items.length) throw new Error("আপনার কার্টের একটি পণ্য আর পাওয়া যাচ্ছে না। Cart থেকে সেটি সরিয়ে আবার চেষ্টা করুন।");
+    if (productMap.size !== new Set(items.map(item => String(item.id))).size) throw new Error("আপনার কার্টের একটি পণ্য আর পাওয়া যাচ্ছে না। Cart থেকে সেটি সরিয়ে আবার চেষ্টা করুন।");
     for (const item of items) {
       const product = productMap.get(String(item.id));
       if (!product || product.active !== true) throw new Error("কার্টের একটি পণ্য বর্তমানে বিক্রির জন্য নেই।");
-      if (Number(product.stock || 0) < Number(item.quantity || 0)) throw new Error("“" + product.name + "” পণ্যের পর্যাপ্ত স্টক নেই। Cart-এ পরিমাণ কমিয়ে আবার চেষ্টা করুন।");
+      if (Number(product.stock || 0) < requestedByProduct.get(String(item.id))) throw new Error("“" + product.name + "” পণ্যের পর্যাপ্ত স্টক নেই। Cart-এ পরিমাণ কমিয়ে আবার চেষ্টা করুন।");
       item.name = product.name;
       item.price = Number(product.price);
     }
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const p = document.createElement("p");
     const name = document.createElement("span");
     const price = document.createElement("strong");
-    name.textContent = item.name + " × " + item.quantity;
+    name.textContent = item.name + (item.selected_size ? " · Size: " + item.selected_size : "") + (item.selected_color ? " · Color: " + item.selected_color : "") + " × " + item.quantity;
     price.textContent = money(item.price * item.quantity);
     p.append(name, price);
     itemsBox.append(p);
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         p_phone: form.phone.value.trim(),
         p_address: form.address.value.trim(),
         p_district: areaInput.value.trim(),
-        p_items: items.map(item => ({ product_id: item.id, quantity: item.quantity }))
+        p_items: items.map(item => ({ product_id: item.id, quantity: item.quantity, selected_size: item.selected_size || null, selected_color: item.selected_color || null }))
       });
       if (error) throw error;
       const orderId = String(data);
