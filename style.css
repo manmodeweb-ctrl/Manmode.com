@@ -667,3 +667,15 @@ a {
 .contact-strip{flex-wrap:wrap}.contact-details{display:flex;flex-wrap:wrap;gap:12px 22px;width:100%;margin-top:24px}.contact-detail,.footer-socials a{color:var(--gold);font-size:12px;text-decoration:none;border-bottom:1px solid rgba(198,163,107,.35);padding-bottom:5px}.footer-socials{display:flex;flex-wrap:wrap;gap:18px;margin-top:20px}.footer-address{width:100%;color:var(--muted);font-size:11px}
 
 .legal-footer-links{display:flex;flex-wrap:wrap;gap:18px;padding:12px 0;border-top:1px solid rgba(255,255,255,.08)}.legal-footer-links a{font-size:10px;letter-spacing:1px;color:var(--muted);text-decoration:none}.legal-footer-links a:hover{color:var(--gold)}
+
+
+/* Product card size/color choices and direct-order button */
+.variant-group{margin-top:12px}
+.variant-label{display:block;color:#aaa;font-size:9px;font-weight:700;letter-spacing:1.2px;margin-bottom:7px}
+.variant-options{display:flex;flex-wrap:wrap;gap:6px}
+.variant-option{border:1px solid #555;background:#101010;color:#eee;padding:7px 10px;font:700 10px "DM Sans",sans-serif;cursor:pointer}
+.variant-option[aria-pressed="true"]{background:#c6a36b;border-color:#c6a36b;color:#111}
+.variant-error{color:#ffaaaa;font-size:11px;margin-top:7px;min-height:14px}
+.home-buy-now{display:block;width:100%;margin-top:8px;padding:12px;background:transparent;color:#c6a36b;border:1px solid #c6a36b;font-weight:800;cursor:pointer}
+.home-buy-now:disabled{opacity:.55;cursor:not-allowed}
+.shop-card-view{display:block;text-align:center;margin-top:12px;color:#c6a36b;font-size:10px;font-weight:800;letter-spacing:1px}
