@@ -62,8 +62,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           button.addEventListener("click", () => { chosen = value; options.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b === button))); });
           options.append(button);
         });
-        wrap.append(heading, options); details.append(wrap);
-        return () => chosen;
+        wrap.append(heading, options);
+        return {wrap, get: () => chosen};
       };
       const getSize = makeChoices("SIZE", product.sizes);
       const getColor = makeChoices("COLOR", product.colors);
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       add.disabled = Number(product.stock ?? 1) <= 0;
       add.addEventListener("click", event => {
         event.preventDefault(); event.stopPropagation();
-        const size = getSize ? getSize() : "", color = getColor ? getColor() : "";
+        const size = getSize ? getSize.get() : "", color = getColor ? getColor.get() : "";
         if (getSize && !size) { variantError.textContent = "Please select a size."; return; }
         if (getColor && !color) { variantError.textContent = "Please select a color."; return; }
         if (window.ManModeCart) { window.ManModeCart.add(product, {selected_size:size, selected_color:color}); variantError.textContent = ""; add.textContent = "ADDED ✓"; setTimeout(() => { add.textContent = "ADD TO CART +"; }, 1400); }
@@ -96,7 +96,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       view.className = "shop-card-view";
       view.href = "product-detail.html?id=" + encodeURIComponent(product.id);
       view.textContent = "VIEW DETAILS ↗";
-      details.append(category, name, price, variantError, add, buy, view);
+      details.append(category, name, price);
+      if (getSize) details.append(getSize.wrap);
+      if (getColor) details.append(getColor.wrap);
+      details.append(variantError, add, buy, view);
       card.append(mediaLink, details);
       grid.appendChild(card);
     });
