@@ -56,11 +56,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     status.textContent=products.length+" product"+(products.length===1?"":"s")+" found";
     products.forEach(p=>{
       const card=document.createElement("article"); card.className="catalog-card";
-      const media=document.createElement("div"); media.className="catalog-card-image";
-      const img=document.createElement("img"); img.loading="lazy"; img.src=p.image_url||"https://placehold.co/600x750/222/eee?text=MAN+MODE"; img.alt=p.name; media.append(img);
+      const mediaLink=document.createElement("a"); mediaLink.href="product-detail.html?id="+encodeURIComponent(p.id); mediaLink.className="product-detail-link"; const media=document.createElement("div"); media.className="catalog-card-image";
+      const img=document.createElement("img"); img.loading="lazy"; img.src=p.image_url||"https://placehold.co/600x750/222/eee?text=MAN+MODE"; img.alt=p.name; media.append(img); mediaLink.append(media);
       const info=document.createElement("div"); info.className="catalog-card-info";
       const cat=document.createElement("p"); cat.className="catalog-card-category"; cat.textContent=p.category||"MAN MODE";
-      const name=document.createElement("h2"); name.textContent=p.name;
+      const name=document.createElement("h2"); const nameLink=document.createElement("a"); nameLink.href="product-detail.html?id="+encodeURIComponent(p.id); nameLink.className="product-detail-link"; nameLink.textContent=p.name; name.append(nameLink);
       const price=document.createElement("p"); price.className="catalog-card-price"; price.textContent=ManModeCart.money(p.price);
       info.append(cat,name,price);
       const getSize=makeChoices(info,"SIZE",Array.isArray(p.sizes)?p.sizes:[]);
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         errorBox.textContent=""; add.textContent="ADDED ✓";
         setTimeout(()=>{add.textContent="ADD TO CART +";},1400);
       });
-      info.append(errorBox,add); card.append(media,info); grid.append(card);
+      info.append(errorBox,add); card.append(mediaLink,info); grid.append(card);
     });
   } catch(e){console.error(e);status.textContent="পণ্য লোড করা যাচ্ছে না। Store connection পরীক্ষা করুন।";}
 });
